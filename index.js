@@ -14,15 +14,16 @@ import path from "path";
 import { fileURLToPath } from "url";
 //To Set the Paths when we configure Directories-path and {fileURLToPath}
 
-// import authRoutes from "./routes/auth.js";
-// import userRoutes from "./routes/users.js";
-// import postRoutes from "./routes/posts.js";
-// import { register } from "./controllers/auth.js";
-// import { createPost } from "./controllers/posts.js";
-// import { verifyToken } from "./middleware/auth.js";
-// import User from "./models/User.js";
-// import Post from "./models/Post.js";
-// import { users, posts } from "./data/index.js";
+import authRoutes from "./routes/auth.js";//Routes Folder which has Paths and the Routes for every Feature-Here that Feature is authRoutes
+/*Setting up User Routes */
+import userRoutes from "./routes/users.js";
+import postRoutes from "./routes/posts.js";
+import { register } from "./controllers/auth.js";//Controller for register functionality
+import { createPost } from "./controllers/posts.js";//Controller for Creating Post functionality
+import { verifyToken } from "./middleware/auth.js";
+import User from "./models/User.js";
+import Post from "./models/Post.js";
+import { users, posts } from "./data/index.js";
 
 /*Configurations- Middleware and Packages Configuration*/
 /*Middleware-Something that runs in between different things*/
@@ -57,15 +58,36 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });//To Upload the File and save it
 //It will be the variable we will use to anytime upload a file
+//We have set upload variable in the index file-So we cannot move it into it's separate files
+//So we haven't kept in it's separate route file
 
-// /* ROUTES WITH FILES */
-// app.post("/auth/register", upload.single("picture"), register);
-// app.post("/posts", verifyToken, upload.single("picture"), createPost);
+/* Routes with Files */
+//Handling Authentication and Authorization
+/*Authentication-Register and Log In
+Authorization-Make sure someone is logged in to allow them to do certain actions
+Like fetching Friends list*/
+app.post("/auth/register", upload.single("picture"), register);//Calling "auth/register" API from the Frontend
+//Route-auth/register which we will be hitting-Then use a Middleware 'upload.songle("picture")'-Upload picture locally to public/assets
+//Our Middleware occurs before register-So It is a middleware
+//Middleware is run before we hit the register endpoint
+//And register endpoint is functionality for registering on the Website
+//We will be creating controller for register as well-'register'=Controller(Logic of an endpoint)
 
-// /* ROUTES */
-// app.use("/auth", authRoutes);
-// app.use("/users", userRoutes);
-// app.use("/posts", postRoutes);
+//Allow User to upload a Picture while creating Post-So we have created a PostRoute
+app.post("/posts", verifyToken, upload.single("picture"), createPost);
+//When we send from Frontend-The picture Image will grab the picture property and upload it in public assests
+
+/* Routes */
+app.use("/auth", authRoutes);//Setting Routes to keep our Folder Structure clean
+/*Here we have /auth unlike on one line above,we have-
+app.post("/auth/register", upload.single("picture"), register);
+auth/register 
+This is because-
+We have router.post("/login", login);
+So /auth will be taken as prefix on /login-
+So It becomes /auth/login finally*/
+app.use("/users", userRoutes);
+app.use("/posts", postRoutes);
 
 /*We will have Frontend at Port 3000 and Backend at Port 3001 */
 /*Mongoose and MongoDB Setup*/
@@ -76,7 +98,8 @@ mongoose.connect(process.env.MONGO_URL, {//mongoose.connect-Connecting to actual
     useUnifiedTopology: true,
 }).then(() => {//Once Connected
     app.listen(PORT, () => console.log(`Server Port- ${PORT}`));//Callback Function to confirm Connection
-    /* ADD DATA ONE TIME */
+    /* Add this Data only once time
+    More Time we run the index.js file,that many times the mock data will be added to MongoDB Database */
     // User.insertMany(users);
     // Post.insertMany(posts);
 }).catch((error) => console.log(`${error} did not connect`));//Catching just in case of error

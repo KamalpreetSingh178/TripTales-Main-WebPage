@@ -1,0 +1,17 @@
+mkdir server
+cd server
+npm i -g nodemon #To Install Nodemon globally
+npm i express body-parser bcrypt cors dotenv gridfs-stream multer multer-gridfs-storage helmet morgan jsonwebtoken mongoose
+express ->For Backend
+body-parser ->To process the request body
+bcrypt ->For Password encryption
+cors ->For cross-origin requests
+dotenv ->For Environment Variables
+gridfs-stream ->For File Upload
+multer,multer-gridfs-storage ->For Local File Upload
+helmet ->For request safety
+morgan ->For logging
+jsonwebtoken ->For Authentication
+mongoose ->For MonogoDB access
+
+npm init -y ->To Setup Package JSON

@@ -15,3 +15,8 @@ jsonwebtoken ->For Authentication
 mongoose ->For MonogoDB access
 
 npm init -y ->To Setup Package JSON
+
+Set up your .env File with Following text-
+MONGO_URL="<>"
+PORT=3001
+JWT_SECRET="<>"
